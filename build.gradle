@@ -1,0 +1,42 @@
+apply plugin: 'groovy'
+
+def seleniumVersion = "2.53.0"
+def groovyVersion = "2.4.6"
+def phantomJsVersion = "1.2.1"
+def gebVersion = "0.13.1"
+def drivers = ["firefox", "chrome", "phantomJs"]
+
+repositories {
+  mavenCentral()
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+  testCompile (
+    'junit:junit:4.12',
+    "org.codehaus.groovy:groovy-all:$groovyVersion",
+    'org.spockframework:spock-core:1.0-groovy-2.4',
+    'org.hamcrest:hamcrest-core:1.3',
+    "org.seleniumhq.selenium:selenium-java:$seleniumVersion",
+    "org.seleniumhq.selenium:selenium-firefox-driver:$seleniumVersion",
+    "org.seleniumhq.selenium:selenium-chrome-driver:$seleniumVersion",
+    "com.codeborne:phantomjsdriver:$phantomJsVersion",
+    "org.gebish:geb-spock:$gebVersion"
+  )
+
+  testRuntime(
+    'com.athaydes:spock-reports:1.2.10'
+  )
+}
+
+drivers.each { driver ->
+  task "${driver}Test"(type: Test) {
+    systemProperty "geb.env", driver
+  }
+}
+
+chromeTest {}
+firefoxTest {}
+phantomJsTest {}
